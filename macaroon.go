@@ -119,6 +119,20 @@ func (m *Macaroon) Caveats() []Caveat {
 	return caveats
 }
 
+// Caveats returns the macaroon's third-party caveats.
+func (m *Macaroon) ThirdPartyCaveats() []Caveat {
+	var caveats []Caveat
+	for _, cav := range m.caveats {
+		if cav.isThirdParty() {
+			caveats = append(caveats, Caveat{
+				Id:       m.dataStr(cav.caveatId),
+				Location: m.dataStr(cav.location),
+			})
+		}
+	}
+	return caveats
+}
+
 // appendCaveat appends a caveat without modifying the macaroon's signature.
 func (m *Macaroon) appendCaveat(caveatId string, verificationId []byte, loc string) (*caveat, error) {
 	var cav caveat
